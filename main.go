@@ -12,36 +12,35 @@ import (
 
 func main() {
 	ckr := run(os.Args[1:])
-	ckr.Name = "Current Session"
+	ckr.Name = "Session State"
 	ckr.Exit()
 }
 
-func getCurrentSessionName(username *string) (string, error) {
-	b, _ := exec.Command("query", "session", *username).Output()
+func getSessionState(session *string) (string, error) {
+	b, _ := exec.Command("query", "session", *session).Output()
 	b, _ = japanese.ShiftJIS.NewDecoder().Bytes(b)
 
 	lines := strings.Split(string(b), "\n")
-	currentSessionName := ""
+	state := ""
+	// Maybe there's only one line
 	for _, line := range lines {
-		if strings.HasPrefix(line, ">") {
-			fields := strings.Fields(line)
-			currentSessionName = strings.TrimLeft(fields[0], ">")
-			break
-		}
+		fields := strings.Fields(line)
+		state = fields[3]
+		break
 	}
 	// If no active connections found, it may be nil, nil
-	return currentSessionName, nil
+	return state, nil
 }
 
 func run(args []string) *checkers.Checker {
-	optUser := flag.String("user", "administrator", "User name")
+	optSession := flag.String("session", "", "Session name")
 	flag.Parse()
 
-	name, err := getCurrentSessionName(optUser)
+	state, err := getSessionState(optSession)
 
 	if err != nil {
 		return checkers.Critical(err.Error())
 	}
 
-	return checkers.NewChecker(checkers.OK, name)
+	return checkers.NewChecker(checkers.OK, state)
 }
