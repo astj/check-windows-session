@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/mackerelio/checkers"
+	"golang.org/x/text/encoding/japanese"
 )
 
 func main() {
@@ -15,10 +16,8 @@ func main() {
 }
 
 func getCurrentSessionName() (string, error) {
-	b, err := exec.Command("query", "session").Output()
-	if err != nil {
-		return "", err
-	}
+	b, _ := exec.Command("query", "session").Output()
+	b, _ = japanese.ShiftJIS.NewDecoder().Bytes(b)
 
 	lines := strings.Split(string(b), "\r\r\n")
 	currentSessionName := ""
