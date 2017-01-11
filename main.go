@@ -24,6 +24,9 @@ func getSessionState(session *string) (string, error) {
 	state := ""
 	for _, line := range lines {
 		fields := strings.Fields(line)
+		if fields == nil || len(fields) < 4 {
+			continue
+		}
 		// >SESSION or SESSION
 		if strings.HasSuffix(fields[0], *session) {
 			state = fields[3]
