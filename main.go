@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,8 +16,8 @@ func main() {
 	ckr.Exit()
 }
 
-func getCurrentSessionName() (string, error) {
-	b, _ := exec.Command("query", "session").Output()
+func getCurrentSessionName(username *string) (string, error) {
+	b, _ := exec.Command("query", "session", *username).Output()
 	b, _ = japanese.ShiftJIS.NewDecoder().Bytes(b)
 
 	lines := strings.Split(string(b), "\n")
@@ -33,8 +34,10 @@ func getCurrentSessionName() (string, error) {
 }
 
 func run(args []string) *checkers.Checker {
+	optUser := flag.String("user", "administrator", "User name")
+	flag.Parse()
 
-	name, err := getCurrentSessionName()
+	name, err := getCurrentSessionName(optUser)
 
 	if err != nil {
 		return checkers.Critical(err.Error())
