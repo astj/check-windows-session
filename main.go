@@ -11,7 +11,7 @@ import (
 
 func main() {
 	ckr := run(os.Args[1:])
-	ckr.Name = "Windows Current Session"
+	ckr.Name = "Current Session"
 	ckr.Exit()
 }
 
