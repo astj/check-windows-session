@@ -22,11 +22,13 @@ func getSessionState(session *string) (string, error) {
 
 	lines := strings.Split(string(b), "\n")
 	state := ""
-	// Maybe there's only one line
 	for _, line := range lines {
 		fields := strings.Fields(line)
-		state = fields[3]
-		break
+		// >SESSION or SESSION
+		if strings.HasSuffix(fields[0], *session) {
+			state = fields[3]
+			break
+		}
 	}
 	// If no active connections found, it may be nil, nil
 	return state, nil
