@@ -14,10 +14,10 @@ func main() {
 	ckr.Exit()
 }
 
-func getCurrentSessionName() (*string, error) {
+func getCurrentSessionName() (string, error) {
 	b, err := exec.Command("query", "session").Output()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	lines := strings.Split(string(b), "\r\r\n")
@@ -30,7 +30,7 @@ func getCurrentSessionName() (*string, error) {
 		}
 	}
 	// If no active connections found, it may be nil, nil
-	return &currentSessionName, nil
+	return currentSessionName, nil
 }
 
 func run(args []string) *checkers.Checker {
@@ -41,5 +41,5 @@ func run(args []string) *checkers.Checker {
 		return checkers.Critical(err.Error())
 	}
 
-	return checkers.NewChecker(checkers.OK, *name)
+	return checkers.NewChecker(checkers.OK, name)
 }
