@@ -19,7 +19,7 @@ func getCurrentSessionName() (string, error) {
 	b, _ := exec.Command("query", "session").Output()
 	b, _ = japanese.ShiftJIS.NewDecoder().Bytes(b)
 
-	lines := strings.Split(string(b), "\r\r\n")
+	lines := strings.Split(string(b), "\n")
 	currentSessionName := ""
 	for _, line := range lines {
 		if strings.HasPrefix(line, ">") {
